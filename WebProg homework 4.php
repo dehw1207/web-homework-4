@@ -1,104 +1,149 @@
+<?php
+$link = mysqli_connect("localhost", 'root', '','ticket_price');
+$_GET['order'] = isset($order) ? $_GET['order'] : null;
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>전체 리스트 뷰</title>
+    <meta charset="utf-8">
+    <title>ticket</title>
     <style>
-      table, th, td {
-        border: 1px solid #bcbcbc;
-      }
-      table {
-        width: 800px;
-        height: 200px;
-      }
-      td {
-        text-align: center;
-      }
+        .input-wrap {
+            width: 960px;
+            margin: 0 auto;
+        }
+        h1 { text-align: center; }
+        th, td { text-align: center; }
+        table {
+            border: 1px solid #000;
+            margin: 0 auto;
+        }
+        td, th {
+            border: 1px solid #ccc;
+        }
+        a { text-decoration: none; }
     </style>
-    <script>
-      var childPrice;
-      var adultPrice;
-      var childPriceElement;
-      var adultPriceElement;
-
-      function showOptions(select) {
-        var selectedOption = select.options[select.selectedIndex];
-        var prices = selectedOption.getAttribute("data-prices").split(",");
-        childPrice = parseInt(prices[0]);
-        adultPrice = parseInt(prices[1]);
-
-        childPriceElement = document.getElementById("childPrice");
-        adultPriceElement = document.getElementById("adultPrice");
-
-        childPriceElement.textContent = childPrice;
-        adultPriceElement.textContent = adultPrice;
-
-        updateOptionValues();
-      }
-
-      function updateOptionValues() {
-        var op1 = document.getElementById("op1");
-        var op2 = document.getElementById("op2");
-        var op3 = document.getElementById("op3");
-        var op4 = document.getElementById("op4");
-
-        var count = document.getElementById("count").value;
-        var opt1Prices = (childPrice * count) + "," + (adultPrice * count);
-        var opt2Prices = (childPrice * count * 2) + "," + (adultPrice * count * 2);
-        var opt3Prices = (childPrice * count * 3) + "," + (adultPrice * count * 3);
-        var opt4Prices = (childPrice * count * 4) + "," + (adultPrice * count * 4);
-
-        op1.setAttribute("data-prices", opt1Prices);
-        op2.setAttribute("data-prices", opt2Prices);
-        op3.setAttribute("data-prices", opt3Prices);
-        op4.setAttribute("data-prices", opt4Prices);
-
-        childPriceElement.textContent = opt1Prices.split(",")[0];
-        adultPriceElement.textContent = opt1Prices.split(",")[1];
-      }
-    </script>
 </head>
 <body>
-    <table border="1">
-    <tr>
-       <td>No</td><td>구분</td><td colspan="2">어린이</td><td colspan="2">어른</td><td>비고</td>
-    </tr>
-    <tr>
-       <td>1</td><td>입장권</td><td colspan="2" id="op1" data-prices="7000,10000">7,000</td><td colspan="2">10,000</td><td>입장</td>
-    </tr>
-    <tr>
-       <td>2</td><td>BIG3</td><td colspan="2" id="op2" data-prices="12000,16000">12,000</td><td colspan="2">16,000</td><td>입장+놀이3종</td>
-    </tr>
-    <tr>
-       <td>3</td><td>자유이용권</td><td colspan="2" id="op3" data-prices="21000,26000">21,000</td><td colspan="2">26,000</td><td>입장+놀이자유</td>
-    </tr>
-    <tr>
-       <td>4</td><td>연간이용권</td><td colspan="2" id="op4" data-prices="70000,90000">70,000</td><td colspan="2">90,000</td><td>입장+놀이자유</td>
-    </tr>
-    <tr>
-       <td colspan="7">
-           <select onchange="showOptions(this)">
-               <option value="0" selected disabled>구분 선택</option>
-               <option value="1" data-prices="7000,10000">입장권</option>
-               <option value="2" data-prices="12000,16000">BIG3</option>
-               <option value="3" data-prices="21000,26000">자유이용권</option>
-               <option value="4" data-prices="70000,90000">연간이용권</option>
-           </select>
-           <select id="count" onchange="updateOptionValues()">
-                <option value="0" selected disabled>개수 선택</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-            </select>
-       </td>
-    </tr>
+    <div class="input-wrap">
+        <form action="" method="POST">
+        고객성명 <input type="text" name="name" placeholder="이름">
+        <input type="submit" name="submit" value="합계"> <br><br>
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>구분</th>
+                        <th>어린이</th>
+                        <th>어른</th>
+                        <th>비고</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>입장권</td>
+                        <td>7,000 <input type="number" name="admission_ch" min="0" max="10"></td>
+                        <td>10,000<input type="number" name="admission_ad" min="0" max="10"></td>
+                        <td>입장</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>BIG3</td>
+                        <td>12,000 <input type="number" name="big3_ch" min="0"  max="10"></td>
+                        <td>16,000 <input type="number" name="big3_ad" min="0" max="10"></td>
+                        <td>입장+놀이3종</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>자유이용권</td>
+                        <td>21,000 <input type="number" name="free_ch" min="0" max="10"></td>
+                        <td>26,000 <input type="number" name="free_ad" min="0" max="10" ></td>
+                        <td>입장+놀이자유</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>연간이용권</td>
+                        <td>70,000 <input type="number" name="year_ch" min="0" max="10" ></td>
+                        <td>90,000 <input type="number" name="year_ad" min="0" max="10"></td>
+                        <td>입장+놀이자유</td>
+                    </tr>
+
+                    <?php
+                    if (isset($_POST['name']) && strlen($_POST['name']) > 0) {
+                        echo $_POST['submit'];
+                        if (isset($_POST['submit']) && $_POST['submit'] == "합계" ) {
+                            /* insert */
+                            $sql="INSERT INTO `ticket` " . 
+                            "(`name`, `admission_ch`, `admission_ad`, `big3_ch`, `big3_ad`, `free_ch`, `free_ad`, `year_ch`, `year_ad`)".
+                            " VALUES ('$_POST[name]', $_POST[admission_ch], $_POST[admission_ad]," .
+                            " $_POST[big3_ch], $_POST[big3_ad], $_POST[free_ch], $_POST[free_ad], $_POST[year_ch], $_POST[year_ad])";
+                            echo $sql;
+                            mysqli_query($link, $sql);
+                        }
+                    }                    
+                    ?>
+                </tbody>
+            </table>
+       </form>
+
+        <?php
+        $name = $_POST['name'];
+        $admission_ch = $_POST['admission_ch'];
+        $admission_ad = $_POST['admission_ad'];
+        $BIG3_ch = $_POST['big3_ch'];
+        $BIG3_ad = $_POST['big3_ch'];
+        $free_ch = $_POST['free_ch'];
+        $free_ad = $_POST['free_ch'];
+        $year_ch = $_POST['year_ch'];
+        $year_ad = $_POST['year_ch'];
+
+
+        if (isset($_POST['name']) && strlen($_POST['name']) > 0) {
+            if (isset($_POST['admission_ch']) && ($_POST['admission_ch'] > 0 )) {
+                echo "어린이 입장권 " . $admission_ch . "매". "<br>";
+            }
+            if(isset($_POST['admission_ad']) &&($_POST['admission_ad'] > 0)) {
+                echo "어른 입장권 " . $admission_ad . "매 <br>";
+            }
+            if(isset($_POST['big3_ch']) &&($_POST['big3_ch']> 0)) {
+                echo "어린이 BIG3 " . $BIG3_ch . "매 <br>";
+            }
+            if(isset($_POST['big3_ad']) &&($_POST['big3_ad']> 0)) {
+                echo "어른 BIG3 " . $BIG3_ad . "매 <br>";
+            }
+            if(isset($_POST['free_ch']) &&($_POST['free_ch']> 0)) {
+                echo "어린이 자유이용권 " . $free_ch . "매 <br>";
+            }
+            if(isset($_POST['free_ad']) &&($_POST['free_ad']> 0)) {
+                echo "어른 자유이용권 " . $free_ad . "매 <br>";
+            }
+            if(isset($_POST['year_ch']) &&($_POST['year_ch']> 0)) {
+                echo "어린이 연간이용권 " . $year_ch . "매 <br>";
+            }
+            if(isset($_POST['year_ad']) &&($_POST['year_ad']> 0)) {
+                echo "어른 연간이용권 " . $year_ad . "매 <br>";
+            }
+            $sum =  7000 * $admission_ch + 10000 * $admission_ad +  12000 * $BIG3_ch + 16000 * $BIG3_ad + 21000 * $free_ch + 26000 * $free_ad +  70000 * $year_ch + 90000 * $year_ad;
+            echo $_POST["name"] . " 고객님 감사합니다. <br>";
+            echo "합계 " . $sum . "입니다";
+        }
+        ?>
+
     
-    <tr>
-       <td colspan="7">어린이 가격: <span id="childPrice">-</span></td>
-    </tr>
-    <tr>
-       <td colspan="7">어른 가격: <span id="adultPrice">-</span></td>
-    </tr>
-    </table>
 </body>
 </html>
+<!-- 
+$result = mysqli_query($link, $query) or die('Query failed: ' . mysqli_error());
+while ($line = mysqli_fetch_array($result, MYSQL_ASSOC)) {
+    echo "<tr>";
+    foreach ($line as $col_value) {
+        echo "<td>$col_value</td>";
+    }
+    echo "</tr>";
+}
+mysqli_free_result($result);
+mysqli_close($link); 
+
+-->
